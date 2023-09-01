@@ -1,7 +1,7 @@
 {
-  "name": "image-search-and-management-system",
+  "name": "image-search-and-management-system-backend-service",
   "version": "1.0.0",
-  "description": "Image Search and Management System",
+  "description": "Image Search and Management System Backend Service",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -28,6 +28,6 @@
   "keywords": [],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Ajay-Maury/Image-Search-and-Management-System.git"
+    "url": "https://github.com/Ajay-Maury/Image-Search-and-Management-System-Backend-Service.git"
   }
 }

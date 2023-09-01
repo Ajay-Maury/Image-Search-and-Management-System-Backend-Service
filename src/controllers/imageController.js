@@ -1,4 +1,4 @@
-const Image = require("../models/Image");
+const Image = require("../models/ImageModel");
 const cloudinary = require("cloudinary").v2;
 
 // Configure Cloudinary
@@ -35,7 +35,7 @@ exports.uploadImage = async (req, res) => {
 
     await image.save();
 
-    res.status(201).send({ message: "Image uploaded successfully" });
+    res.status(201).send({ message: "Image uploaded successfully",imageUrl: secure_url });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
@@ -75,8 +75,8 @@ exports.searchImages = async (req, res) => {
     const images = await Image.aggregate(pipeline);
 
     return res.status(200).send({
-      data: images[0].data,
-      totalCount: images[0].count[0].totalCount,
+      data: images[0].data || [],
+      totalCount: images[0]?.count[0]?.totalCount || 0,
     });
   } catch (error) {
     console.log("error:", error);
