@@ -9,33 +9,46 @@ cloudinary.config({
   secure: true,
 });
 
-exports.uploadImage = async (req, res) => {
+exports.uploadImageToCloudinary = async (req, res) => {
   try {
-    const { title = "", description = "", keywords = "" } = req.body;
-
     const imageFile = req.file; // getting file upload from multer
     const imagePath = imageFile.path;
 
     // Upload an image to Cloudinary
-    const { width, height, secure_url, bytes } =
-      await cloudinary.uploader.upload(imagePath, {
-        folder: "image-search-and-management-system",
-        tags: keywords.split(",").map((keyword) => keyword.trim()),
-      });
+    const result = await cloudinary.uploader.upload(imagePath, {
+      folder: "image-search-and-management-system",
+    });
+
+    res.status(201).send({ message: "Image uploaded successfully", ...result });
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
+exports.SaveImage = async (req, res) => {
+  try {
+    const {
+      title = "",
+      description = "",
+      keywords = "",
+      height,
+      width,
+      imageUrl,
+      size,
+    } = req.body;
 
     // Create a new image record in the database
-    const image = new Image({
+    const image = await Image.create({
       title,
       description,
       keywords: keywords.split(",").map((keyword) => keyword.trim()),
-      imageUrl: secure_url,
-      dimensions: `${width}X${height}`,
-      size: (bytes / 1024).toFixed(2), // converting bytes in KB and then storing it
+      height,
+      width,
+      imageUrl,
+      size: size.toFixed(2),
     });
 
-    await image.save();
-
-    res.status(201).send({ message: "Image uploaded successfully",imageUrl: secure_url });
+    res.status(201).send({ message: "Image saved successfully", image });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
@@ -44,20 +57,19 @@ exports.uploadImage = async (req, res) => {
 exports.searchImages = async (req, res) => {
   try {
     const {
-      title = "",
-      keywords = "",
+      searchText = "",
       sort = { uploadedAt: -1 },
       limit = 10,
       offset = 0,
-    } = req.query;
+    } = req.body;
 
     const pipeline = [
       { $match: {} },
       {
         $match: {
           $or: [
-            { title: { $regex: new RegExp(title, "i") } },
-            { keywords: { $regex: new RegExp(keywords, "i") } },
+            { title: { $regex: new RegExp(searchText, "i") } },
+            { description: { $regex: new RegExp(searchText, "i") } },
           ],
         },
       },
@@ -77,9 +89,20 @@ exports.searchImages = async (req, res) => {
     return res.status(200).send({
       data: images[0].data || [],
       totalCount: images[0]?.count[0]?.totalCount || 0,
+      message: "Successfully fetched images",
     });
   } catch (error) {
-    console.log("error:", error);
-    return res.status(500).send({ error: error.message });
+    return res.status(500).send({ message: error.message });
+  }
+};
+
+exports.searchImageById = async (req, res) => {
+  try {
+    const image = await Image.findById({ _id: req.params.id });
+    return res
+      .status(200)
+      .send({ image, message: "Successfully fetched image by id" });
+  } catch (error) {
+    return res.status(500).send({ message: error.message });
   }
 };

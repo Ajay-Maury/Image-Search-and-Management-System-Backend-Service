@@ -6,11 +6,19 @@ const imageController = require('../controllers/imageController');
 const router = express.Router();
 
 router
-  .route('/image/upload')
-  .post(authMiddleware.authenticate, upload.single('image'), imageController.uploadImage);
+  .route('/image/save')
+  .post(authMiddleware.authenticate, imageController.SaveImage);
+
+router
+  .route('/image/cloudinary-upload')
+  .post(authMiddleware.authenticate, upload.single('file'), imageController.uploadImageToCloudinary);
 
 router
   .route('/image/search')
-  .get(authMiddleware.authenticate, imageController.searchImages);
+  .post(authMiddleware.authenticate, imageController.searchImages);
+
+router
+  .route('/image-by-id/:id')
+  .get(authMiddleware.authenticate, imageController.searchImageById);
 
 module.exports = router;
