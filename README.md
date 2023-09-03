@@ -69,7 +69,8 @@ The server will be running on the specified port (or port 3000 by default).
 
   ```json
   {
-    "message": "User registered successfully"
+    "message": "User registered successfully",
+    "status": true
   }
   ```
 
@@ -77,7 +78,8 @@ The server will be running on the specified port (or port 3000 by default).
 
   ```json
   {
-    "error": "Email already in use"
+    "message": "Email already in use",
+    "status": false
   }
   ```
 
@@ -102,7 +104,9 @@ The server will be running on the specified port (or port 3000 by default).
 
   ```json
   {
-    "token": "your-json-web-token"
+    "token": "your-json-web-token",
+    "message": "User logged in successfully",
+    "status": true
   }
   ```
 
@@ -110,13 +114,14 @@ The server will be running on the specified port (or port 3000 by default).
 
   ```json
   {
-    "error": "Invalid credentials."
+    "message": "Invalid credentials.",
+    "status": false
   }
   ```
 
-### Upload Image
+### Upload Image on Cloudinary
 
-**Endpoint**: `/api/image/upload`
+**Endpoint**: `/api/image/cloudinary-upload`
 
 **Method**: `POST`
 
@@ -133,15 +138,34 @@ The server will be running on the specified port (or port 3000 by default).
   ```json
   {
     "message": "Image uploaded successfully",
-    "imageUrl": "url-to-the-uploaded-image"
-  }
+    "asset_id": "cloudinary asset id",
+    "public_id": "cloudinary public id",
+    "version": "version",
+    "version_id": "version id",
+    "signature": "cloudinary signature",
+    "width": "width of image",
+    "height": "height og image",
+    "format": "image format",
+    "resource_type": "image",
+    "created_at": "upload date",
+    "tags": [],
+    "bytes": "image size in bytes",
+    "type": "upload",
+    "etag": "etag",
+    "placeholder": false,
+    "url": "uploaded image URL",
+    "secure_url": "uploaded image secure url",
+    "folder": "image folder on cloudinary",
+    "original_filename": "file name",
+    "api_key": "cloudinary api key"
+}
   ```
 
 - Error (Status: 400 Bad Request):
 
   ```json
   {
-    "error": "Invalid file format"
+    "message": "Invalid file format"
   }
   ```
 
@@ -149,7 +173,67 @@ The server will be running on the specified port (or port 3000 by default).
 
   ```json
   {
-    "error": "Invalid token"
+    "message": "Invalid token"
+  }
+  ```
+
+  ### Save uploaded image details in the database 
+
+**Endpoint**: `/api/image/save`
+
+**Method**: `POST`
+
+**Payload**: 
+
+```json
+{
+ "title": "image title",
+"description": "image description",
+"keywords": "image keywords in comma (,) separated string ",
+"height": "height of image",
+"width": "width of image",
+"imageUrl": "uploaded image URL",
+"size": "image size in KB",
+}
+```
+
+**Headers**:
+
+- `Authorization` (required): Bearer token received after login.
+
+**Response**:
+
+- Success (Status: 200 OK):
+
+  ```json
+  {
+   "message": "Image saved successfully",
+   "image": {
+   "_id": "mongo object id",
+   "title": "image title",
+   "description": "image description",
+   "keywords": "image keywords in comma (,) separated string ",
+   "height": "height of image",
+   "width": "width of image",
+   "imageUrl": "uploaded image URL",
+   "size": "image size in KB"
+   }
+  }
+  ```
+
+- Error (Status: Internal Server Error):
+
+  ```json
+  {
+    "message": "(error message)"
+  }
+  ```
+
+- Authentication Error (Status: 401 Unauthorized):
+
+  ```json
+  {
+    "message": "Invalid token"
   }
   ```
 
@@ -157,11 +241,19 @@ The server will be running on the specified port (or port 3000 by default).
 
 **Endpoint**: `/api/image/search`
 
-**Method**: `GET`
+**Method**: `POST`
 
-<!-- **Query Parameters**:
 
-- `query` (required): Search query. -->
+**Payload**: 
+
+```json
+{
+"searchText": "searched text (optional)",
+"sort": "{sorting key with value} (default value is { uploadedAt: -1 })",
+"limit": "limit of documents (number) (default value is 10)",
+"offset": "documents offset (number) (default value is 0)"
+}
+```
 
 **Headers**:
 
@@ -179,7 +271,8 @@ The server will be running on the specified port (or port 3000 by default).
         "title": "image title",
         "description": "image description",
         "imageUrl": "image url",
-        "dimensions": "width X height",
+        "width": "width of image",
+        "height": "height of image",
         "size": "image size in KB",
         "keywords": ["image keywords"],
         "tags": ["image tags"]
@@ -189,7 +282,8 @@ The server will be running on the specified port (or port 3000 by default).
         "title": "image title",
         "description": "image description",
         "imageUrl": "image url",
-        "dimensions": "width X height",
+        "width": "width of image",
+        "height": "height of image",
         "size": "image size in KB",
         "keywords": ["image keywords"],
         "tags": ["image tags"]
