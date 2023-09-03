@@ -177,7 +177,7 @@ The server will be running on the specified port (or port 3000 by default).
   }
   ```
 
-  ### Save uploaded image details in the database 
+### Save uploaded image details in the database 
 
 **Endpoint**: `/api/image/save`
 
