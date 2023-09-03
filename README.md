@@ -158,7 +158,7 @@ The server will be running on the specified port (or port 3000 by default).
     "folder": "image folder on cloudinary",
     "original_filename": "file name",
     "api_key": "cloudinary api key"
-}
+  }
   ```
 
 - Error (Status: 400 Bad Request):
