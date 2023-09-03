@@ -301,4 +301,14 @@ The server will be running on the specified port (or port 3000 by default).
     "totalCount": 0
   }
   ```
-  This README provides an overview of the backend service, its dependencies, and the available API endpoints with sample payloads and responses. You can find the full implementation in the [GitHub repository](https://github.com/Ajay-Maury/Image-Search-and-Management-System-Backend-Service).
+
+
+## Deployed Application
+
+You can access the deployed application at the following URL:
+
+[Image Search and Management System - Backend Service](https://frail-ruby-penguin.cyclic.app/api)
+
+Feel free to explore and use the backend service for your Image Search and Management System project. If you have any questions or encounter any issues, please refer to the project's documentation or reach out to me.
+
+Happy image management!
